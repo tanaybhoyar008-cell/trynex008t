@@ -1,25 +1,31 @@
-import { useState } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { ChevronLeft, ChevronDown } from "lucide-react";
-import { LineChart, Line, ResponsiveContainer, XAxis, YAxis, Tooltip, CartesianGrid } from "recharts";
+import { useQuery } from "@tanstack/react-query";
+import { ChevronLeft, Film } from "lucide-react";
 
 import { MobileFrame } from "@/components/MobileFrame";
 import { BottomNav } from "@/components/BottomNav";
+import { userVideosQuery } from "@/lib/queries";
+import { formatCount } from "@/lib/format";
 
 export const Route = createFileRoute("/_authenticated/analytics")({
   head: () => ({ meta: [{ title: "Analytics — TRYNEX" }] }),
   component: Analytics,
 });
 
-const PERIODS = ["Last 7 Days", "Last 30 Days", "All Time"] as const;
-const SERIES = [
-  { d: "12 May", v: 8500 }, { d: "13 May", v: 11200 }, { d: "14 May", v: 9800 },
-  { d: "15 May", v: 14500 }, { d: "16 May", v: 19000 }, { d: "17 May", v: 23500 }, { d: "18 May", v: 31200 },
-];
-
 function Analytics() {
   const navigate = useNavigate();
-  const [period, setPeriod] = useState<(typeof PERIODS)[number]>("Last 7 Days");
+  const { user } = Route.useRouteContext();
+  const { data: videos = [] } = useQuery(userVideosQuery(user.id));
+
+  const totals = videos.reduce(
+    (acc, v) => {
+      acc.views += Number(v.views ?? 0);
+      acc.likes += v.likes_count;
+      acc.comments += v.comments_count;
+      return acc;
+    },
+    { views: 0, likes: 0, comments: 0 },
+  );
 
   return (
     <MobileFrame>
@@ -32,42 +38,35 @@ function Analytics() {
           <span className="w-9" />
         </header>
 
-        <div className="mt-5 px-5">
-          <button
-            onClick={() => { const i = PERIODS.indexOf(period); setPeriod(PERIODS[(i + 1) % PERIODS.length]); }}
-            className="flex items-center gap-1.5 rounded-full bg-surface px-3 py-1.5 text-xs font-semibold ring-1 ring-border"
-          >
-            {period} <ChevronDown className="h-3.5 w-3.5" />
-          </button>
+        <div className="mt-5 grid grid-cols-2 gap-3 px-5">
+          <KPI label="Total Views" value={formatCount(totals.views)} />
+          <KPI label="Total Likes" value={formatCount(totals.likes)} />
+          <KPI label="Comments" value={formatCount(totals.comments)} />
+          <KPI label="Uploads" value={String(videos.length)} highlight />
         </div>
 
-        <div className="mt-4 grid grid-cols-2 gap-3 px-5">
-          <KPI label="Views" value="256.6K" />
-          <KPI label="Watch Time" value="10.5K hrs" />
-          <KPI label="Likes" value="22.5K" />
-          <KPI label="Comments" value="2.1K" />
-          <KPI label="Shares" value="1.2K" />
-          <KPI label="Earnings" value="₹12,560" highlight />
-        </div>
-
-        <div className="mx-5 mt-6 rounded-2xl bg-surface p-4 ring-1 ring-border">
-          <div className="h-56">
-            <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={SERIES} margin={{ top: 8, right: 8, left: -10, bottom: 0 }}>
-                <defs>
-                  <linearGradient id="lineG" x1="0" y1="0" x2="1" y2="0">
-                    <stop offset="0%" stopColor="oklch(0.62 0.23 295)" />
-                    <stop offset="100%" stopColor="oklch(0.75 0.18 305)" />
-                  </linearGradient>
-                </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="oklch(1 0 0 / 0.05)" vertical={false} />
-                <XAxis dataKey="d" stroke="oklch(0.72 0.03 290)" fontSize={10} tickLine={false} axisLine={false} />
-                <YAxis stroke="oklch(0.72 0.03 290)" fontSize={10} tickLine={false} axisLine={false} tickFormatter={(n) => `${n / 1000}K`} />
-                <Tooltip contentStyle={{ background: "oklch(0.18 0.045 290)", border: "1px solid oklch(1 0 0 / 0.1)", borderRadius: 12, fontSize: 12 }} />
-                <Line type="monotone" dataKey="v" stroke="url(#lineG)" strokeWidth={3} dot={{ r: 3, fill: "oklch(0.75 0.18 305)" }} />
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
+        <div className="mt-6 px-5">
+          <h3 className="mb-2 font-display text-sm font-bold">Top videos</h3>
+          {videos.length === 0 ? (
+            <div className="rounded-2xl bg-surface p-6 text-center ring-1 ring-border">
+              <Film className="mx-auto h-6 w-6 text-muted-foreground" />
+              <p className="mt-2 text-xs text-muted-foreground">No uploads yet — your stats appear once you publish.</p>
+            </div>
+          ) : (
+            <div className="space-y-2">
+              {[...videos].sort((a, b) => Number(b.views) - Number(a.views)).slice(0, 10).map((v) => (
+                <div key={v.id} className="flex items-center gap-3 rounded-2xl bg-surface p-2 ring-1 ring-border">
+                  <div className="grid h-10 w-14 place-items-center overflow-hidden rounded-lg bg-surface-2">
+                    {v.thumbnail_signed_url ? <img src={v.thumbnail_signed_url} alt="" className="h-full w-full object-cover" /> : <Film className="h-4 w-4 text-muted-foreground" />}
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <p className="line-clamp-1 text-xs font-semibold">{v.title}</p>
+                    <p className="text-[10px] text-muted-foreground">{formatCount(v.views)} views · {formatCount(v.likes_count)} likes</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </div>
       <BottomNav />

@@ -18,10 +18,7 @@ import { Route as WatchIdRouteImport } from './routes/watch.$id'
 import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated.profile'
 import { Route as AuthenticatedCreateRouteImport } from './routes/_authenticated.create'
 import { Route as AuthenticatedAnalyticsRouteImport } from './routes/_authenticated.analytics'
-import { Route as AuthenticatedCreateUploadingRouteImport } from './routes/_authenticated.create.uploading'
-import { Route as AuthenticatedCreateSelectRouteImport } from './routes/_authenticated.create.select'
-import { Route as AuthenticatedCreateMetaRouteImport } from './routes/_authenticated.create.meta'
-import { Route as AuthenticatedCreateDetailsRouteImport } from './routes/_authenticated.create.details'
+import { Route as AuthenticatedProfileEditRouteImport } from './routes/_authenticated.profile.edit'
 
 const WatchlistRoute = WatchlistRouteImport.update({
   id: '/watchlist',
@@ -67,28 +64,11 @@ const AuthenticatedAnalyticsRoute = AuthenticatedAnalyticsRouteImport.update({
   path: '/analytics',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
-const AuthenticatedCreateUploadingRoute =
-  AuthenticatedCreateUploadingRouteImport.update({
-    id: '/uploading',
-    path: '/uploading',
-    getParentRoute: () => AuthenticatedCreateRoute,
-  } as any)
-const AuthenticatedCreateSelectRoute =
-  AuthenticatedCreateSelectRouteImport.update({
-    id: '/select',
-    path: '/select',
-    getParentRoute: () => AuthenticatedCreateRoute,
-  } as any)
-const AuthenticatedCreateMetaRoute = AuthenticatedCreateMetaRouteImport.update({
-  id: '/meta',
-  path: '/meta',
-  getParentRoute: () => AuthenticatedCreateRoute,
-} as any)
-const AuthenticatedCreateDetailsRoute =
-  AuthenticatedCreateDetailsRouteImport.update({
-    id: '/details',
-    path: '/details',
-    getParentRoute: () => AuthenticatedCreateRoute,
+const AuthenticatedProfileEditRoute =
+  AuthenticatedProfileEditRouteImport.update({
+    id: '/edit',
+    path: '/edit',
+    getParentRoute: () => AuthenticatedProfileRoute,
   } as any)
 
 export interface FileRoutesByFullPath {
@@ -97,13 +77,10 @@ export interface FileRoutesByFullPath {
   '/discover': typeof DiscoverRoute
   '/watchlist': typeof WatchlistRoute
   '/analytics': typeof AuthenticatedAnalyticsRoute
-  '/create': typeof AuthenticatedCreateRouteWithChildren
-  '/profile': typeof AuthenticatedProfileRoute
+  '/create': typeof AuthenticatedCreateRoute
+  '/profile': typeof AuthenticatedProfileRouteWithChildren
   '/watch/$id': typeof WatchIdRoute
-  '/create/details': typeof AuthenticatedCreateDetailsRoute
-  '/create/meta': typeof AuthenticatedCreateMetaRoute
-  '/create/select': typeof AuthenticatedCreateSelectRoute
-  '/create/uploading': typeof AuthenticatedCreateUploadingRoute
+  '/profile/edit': typeof AuthenticatedProfileEditRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -111,13 +88,10 @@ export interface FileRoutesByTo {
   '/discover': typeof DiscoverRoute
   '/watchlist': typeof WatchlistRoute
   '/analytics': typeof AuthenticatedAnalyticsRoute
-  '/create': typeof AuthenticatedCreateRouteWithChildren
-  '/profile': typeof AuthenticatedProfileRoute
+  '/create': typeof AuthenticatedCreateRoute
+  '/profile': typeof AuthenticatedProfileRouteWithChildren
   '/watch/$id': typeof WatchIdRoute
-  '/create/details': typeof AuthenticatedCreateDetailsRoute
-  '/create/meta': typeof AuthenticatedCreateMetaRoute
-  '/create/select': typeof AuthenticatedCreateSelectRoute
-  '/create/uploading': typeof AuthenticatedCreateUploadingRoute
+  '/profile/edit': typeof AuthenticatedProfileEditRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -127,13 +101,10 @@ export interface FileRoutesById {
   '/discover': typeof DiscoverRoute
   '/watchlist': typeof WatchlistRoute
   '/_authenticated/analytics': typeof AuthenticatedAnalyticsRoute
-  '/_authenticated/create': typeof AuthenticatedCreateRouteWithChildren
-  '/_authenticated/profile': typeof AuthenticatedProfileRoute
+  '/_authenticated/create': typeof AuthenticatedCreateRoute
+  '/_authenticated/profile': typeof AuthenticatedProfileRouteWithChildren
   '/watch/$id': typeof WatchIdRoute
-  '/_authenticated/create/details': typeof AuthenticatedCreateDetailsRoute
-  '/_authenticated/create/meta': typeof AuthenticatedCreateMetaRoute
-  '/_authenticated/create/select': typeof AuthenticatedCreateSelectRoute
-  '/_authenticated/create/uploading': typeof AuthenticatedCreateUploadingRoute
+  '/_authenticated/profile/edit': typeof AuthenticatedProfileEditRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -146,10 +117,7 @@ export interface FileRouteTypes {
     | '/create'
     | '/profile'
     | '/watch/$id'
-    | '/create/details'
-    | '/create/meta'
-    | '/create/select'
-    | '/create/uploading'
+    | '/profile/edit'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -160,10 +128,7 @@ export interface FileRouteTypes {
     | '/create'
     | '/profile'
     | '/watch/$id'
-    | '/create/details'
-    | '/create/meta'
-    | '/create/select'
-    | '/create/uploading'
+    | '/profile/edit'
   id:
     | '__root__'
     | '/'
@@ -175,10 +140,7 @@ export interface FileRouteTypes {
     | '/_authenticated/create'
     | '/_authenticated/profile'
     | '/watch/$id'
-    | '/_authenticated/create/details'
-    | '/_authenticated/create/meta'
-    | '/_authenticated/create/select'
-    | '/_authenticated/create/uploading'
+    | '/_authenticated/profile/edit'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -255,64 +217,37 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAnalyticsRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
-    '/_authenticated/create/uploading': {
-      id: '/_authenticated/create/uploading'
-      path: '/uploading'
-      fullPath: '/create/uploading'
-      preLoaderRoute: typeof AuthenticatedCreateUploadingRouteImport
-      parentRoute: typeof AuthenticatedCreateRoute
-    }
-    '/_authenticated/create/select': {
-      id: '/_authenticated/create/select'
-      path: '/select'
-      fullPath: '/create/select'
-      preLoaderRoute: typeof AuthenticatedCreateSelectRouteImport
-      parentRoute: typeof AuthenticatedCreateRoute
-    }
-    '/_authenticated/create/meta': {
-      id: '/_authenticated/create/meta'
-      path: '/meta'
-      fullPath: '/create/meta'
-      preLoaderRoute: typeof AuthenticatedCreateMetaRouteImport
-      parentRoute: typeof AuthenticatedCreateRoute
-    }
-    '/_authenticated/create/details': {
-      id: '/_authenticated/create/details'
-      path: '/details'
-      fullPath: '/create/details'
-      preLoaderRoute: typeof AuthenticatedCreateDetailsRouteImport
-      parentRoute: typeof AuthenticatedCreateRoute
+    '/_authenticated/profile/edit': {
+      id: '/_authenticated/profile/edit'
+      path: '/edit'
+      fullPath: '/profile/edit'
+      preLoaderRoute: typeof AuthenticatedProfileEditRouteImport
+      parentRoute: typeof AuthenticatedProfileRoute
     }
   }
 }
 
-interface AuthenticatedCreateRouteChildren {
-  AuthenticatedCreateDetailsRoute: typeof AuthenticatedCreateDetailsRoute
-  AuthenticatedCreateMetaRoute: typeof AuthenticatedCreateMetaRoute
-  AuthenticatedCreateSelectRoute: typeof AuthenticatedCreateSelectRoute
-  AuthenticatedCreateUploadingRoute: typeof AuthenticatedCreateUploadingRoute
+interface AuthenticatedProfileRouteChildren {
+  AuthenticatedProfileEditRoute: typeof AuthenticatedProfileEditRoute
 }
 
-const AuthenticatedCreateRouteChildren: AuthenticatedCreateRouteChildren = {
-  AuthenticatedCreateDetailsRoute: AuthenticatedCreateDetailsRoute,
-  AuthenticatedCreateMetaRoute: AuthenticatedCreateMetaRoute,
-  AuthenticatedCreateSelectRoute: AuthenticatedCreateSelectRoute,
-  AuthenticatedCreateUploadingRoute: AuthenticatedCreateUploadingRoute,
+const AuthenticatedProfileRouteChildren: AuthenticatedProfileRouteChildren = {
+  AuthenticatedProfileEditRoute: AuthenticatedProfileEditRoute,
 }
 
-const AuthenticatedCreateRouteWithChildren =
-  AuthenticatedCreateRoute._addFileChildren(AuthenticatedCreateRouteChildren)
+const AuthenticatedProfileRouteWithChildren =
+  AuthenticatedProfileRoute._addFileChildren(AuthenticatedProfileRouteChildren)
 
 interface AuthenticatedRouteChildren {
   AuthenticatedAnalyticsRoute: typeof AuthenticatedAnalyticsRoute
-  AuthenticatedCreateRoute: typeof AuthenticatedCreateRouteWithChildren
-  AuthenticatedProfileRoute: typeof AuthenticatedProfileRoute
+  AuthenticatedCreateRoute: typeof AuthenticatedCreateRoute
+  AuthenticatedProfileRoute: typeof AuthenticatedProfileRouteWithChildren
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedAnalyticsRoute: AuthenticatedAnalyticsRoute,
-  AuthenticatedCreateRoute: AuthenticatedCreateRouteWithChildren,
-  AuthenticatedProfileRoute: AuthenticatedProfileRoute,
+  AuthenticatedCreateRoute: AuthenticatedCreateRoute,
+  AuthenticatedProfileRoute: AuthenticatedProfileRouteWithChildren,
 }
 
 const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
@@ -330,3 +265,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
