@@ -148,7 +148,7 @@ function Watch() {
           <div className="px-5 pt-4">
             <h1 className="font-display text-lg font-bold leading-snug">{video.title}</h1>
             <div className="mt-2 flex flex-wrap gap-1.5">
-              {video.tags.map((t) => (
+              {(video.tags ?? []).map((t: string) => (
                 <span key={t} className="rounded-full bg-accent/60 px-2 py-0.5 text-[10px] font-medium text-brand-2">{t}</span>
               ))}
             </div>
