@@ -9,38 +9,217 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as WatchlistRouteImport } from './routes/watchlist'
+import { Route as DiscoverRouteImport } from './routes/discover'
+import { Route as AuthRouteImport } from './routes/auth'
+import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as WatchIdRouteImport } from './routes/watch.$id'
+import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated.profile'
+import { Route as AuthenticatedCreateRouteImport } from './routes/_authenticated.create'
+import { Route as AuthenticatedAnalyticsRouteImport } from './routes/_authenticated.analytics'
+import { Route as AuthenticatedCreateUploadingRouteImport } from './routes/_authenticated.create.uploading'
+import { Route as AuthenticatedCreateSelectRouteImport } from './routes/_authenticated.create.select'
+import { Route as AuthenticatedCreateMetaRouteImport } from './routes/_authenticated.create.meta'
+import { Route as AuthenticatedCreateDetailsRouteImport } from './routes/_authenticated.create.details'
 
+const WatchlistRoute = WatchlistRouteImport.update({
+  id: '/watchlist',
+  path: '/watchlist',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DiscoverRoute = DiscoverRouteImport.update({
+  id: '/discover',
+  path: '/discover',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedRoute = AuthenticatedRouteImport.update({
+  id: '/_authenticated',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const WatchIdRoute = WatchIdRouteImport.update({
+  id: '/watch/$id',
+  path: '/watch/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedProfileRoute = AuthenticatedProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedCreateRoute = AuthenticatedCreateRouteImport.update({
+  id: '/create',
+  path: '/create',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedAnalyticsRoute = AuthenticatedAnalyticsRouteImport.update({
+  id: '/analytics',
+  path: '/analytics',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedCreateUploadingRoute =
+  AuthenticatedCreateUploadingRouteImport.update({
+    id: '/uploading',
+    path: '/uploading',
+    getParentRoute: () => AuthenticatedCreateRoute,
+  } as any)
+const AuthenticatedCreateSelectRoute =
+  AuthenticatedCreateSelectRouteImport.update({
+    id: '/select',
+    path: '/select',
+    getParentRoute: () => AuthenticatedCreateRoute,
+  } as any)
+const AuthenticatedCreateMetaRoute = AuthenticatedCreateMetaRouteImport.update({
+  id: '/meta',
+  path: '/meta',
+  getParentRoute: () => AuthenticatedCreateRoute,
+} as any)
+const AuthenticatedCreateDetailsRoute =
+  AuthenticatedCreateDetailsRouteImport.update({
+    id: '/details',
+    path: '/details',
+    getParentRoute: () => AuthenticatedCreateRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
+  '/discover': typeof DiscoverRoute
+  '/watchlist': typeof WatchlistRoute
+  '/analytics': typeof AuthenticatedAnalyticsRoute
+  '/create': typeof AuthenticatedCreateRouteWithChildren
+  '/profile': typeof AuthenticatedProfileRoute
+  '/watch/$id': typeof WatchIdRoute
+  '/create/details': typeof AuthenticatedCreateDetailsRoute
+  '/create/meta': typeof AuthenticatedCreateMetaRoute
+  '/create/select': typeof AuthenticatedCreateSelectRoute
+  '/create/uploading': typeof AuthenticatedCreateUploadingRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
+  '/discover': typeof DiscoverRoute
+  '/watchlist': typeof WatchlistRoute
+  '/analytics': typeof AuthenticatedAnalyticsRoute
+  '/create': typeof AuthenticatedCreateRouteWithChildren
+  '/profile': typeof AuthenticatedProfileRoute
+  '/watch/$id': typeof WatchIdRoute
+  '/create/details': typeof AuthenticatedCreateDetailsRoute
+  '/create/meta': typeof AuthenticatedCreateMetaRoute
+  '/create/select': typeof AuthenticatedCreateSelectRoute
+  '/create/uploading': typeof AuthenticatedCreateUploadingRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_authenticated': typeof AuthenticatedRouteWithChildren
+  '/auth': typeof AuthRoute
+  '/discover': typeof DiscoverRoute
+  '/watchlist': typeof WatchlistRoute
+  '/_authenticated/analytics': typeof AuthenticatedAnalyticsRoute
+  '/_authenticated/create': typeof AuthenticatedCreateRouteWithChildren
+  '/_authenticated/profile': typeof AuthenticatedProfileRoute
+  '/watch/$id': typeof WatchIdRoute
+  '/_authenticated/create/details': typeof AuthenticatedCreateDetailsRoute
+  '/_authenticated/create/meta': typeof AuthenticatedCreateMetaRoute
+  '/_authenticated/create/select': typeof AuthenticatedCreateSelectRoute
+  '/_authenticated/create/uploading': typeof AuthenticatedCreateUploadingRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/auth'
+    | '/discover'
+    | '/watchlist'
+    | '/analytics'
+    | '/create'
+    | '/profile'
+    | '/watch/$id'
+    | '/create/details'
+    | '/create/meta'
+    | '/create/select'
+    | '/create/uploading'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/auth'
+    | '/discover'
+    | '/watchlist'
+    | '/analytics'
+    | '/create'
+    | '/profile'
+    | '/watch/$id'
+    | '/create/details'
+    | '/create/meta'
+    | '/create/select'
+    | '/create/uploading'
+  id:
+    | '__root__'
+    | '/'
+    | '/_authenticated'
+    | '/auth'
+    | '/discover'
+    | '/watchlist'
+    | '/_authenticated/analytics'
+    | '/_authenticated/create'
+    | '/_authenticated/profile'
+    | '/watch/$id'
+    | '/_authenticated/create/details'
+    | '/_authenticated/create/meta'
+    | '/_authenticated/create/select'
+    | '/_authenticated/create/uploading'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthenticatedRoute: typeof AuthenticatedRouteWithChildren
+  AuthRoute: typeof AuthRoute
+  DiscoverRoute: typeof DiscoverRoute
+  WatchlistRoute: typeof WatchlistRoute
+  WatchIdRoute: typeof WatchIdRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/watchlist': {
+      id: '/watchlist'
+      path: '/watchlist'
+      fullPath: '/watchlist'
+      preLoaderRoute: typeof WatchlistRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/discover': {
+      id: '/discover'
+      path: '/discover'
+      fullPath: '/discover'
+      preLoaderRoute: typeof DiscoverRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -48,11 +227,105 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/watch/$id': {
+      id: '/watch/$id'
+      path: '/watch/$id'
+      fullPath: '/watch/$id'
+      preLoaderRoute: typeof WatchIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/profile': {
+      id: '/_authenticated/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof AuthenticatedProfileRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/create': {
+      id: '/_authenticated/create'
+      path: '/create'
+      fullPath: '/create'
+      preLoaderRoute: typeof AuthenticatedCreateRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/analytics': {
+      id: '/_authenticated/analytics'
+      path: '/analytics'
+      fullPath: '/analytics'
+      preLoaderRoute: typeof AuthenticatedAnalyticsRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/create/uploading': {
+      id: '/_authenticated/create/uploading'
+      path: '/uploading'
+      fullPath: '/create/uploading'
+      preLoaderRoute: typeof AuthenticatedCreateUploadingRouteImport
+      parentRoute: typeof AuthenticatedCreateRoute
+    }
+    '/_authenticated/create/select': {
+      id: '/_authenticated/create/select'
+      path: '/select'
+      fullPath: '/create/select'
+      preLoaderRoute: typeof AuthenticatedCreateSelectRouteImport
+      parentRoute: typeof AuthenticatedCreateRoute
+    }
+    '/_authenticated/create/meta': {
+      id: '/_authenticated/create/meta'
+      path: '/meta'
+      fullPath: '/create/meta'
+      preLoaderRoute: typeof AuthenticatedCreateMetaRouteImport
+      parentRoute: typeof AuthenticatedCreateRoute
+    }
+    '/_authenticated/create/details': {
+      id: '/_authenticated/create/details'
+      path: '/details'
+      fullPath: '/create/details'
+      preLoaderRoute: typeof AuthenticatedCreateDetailsRouteImport
+      parentRoute: typeof AuthenticatedCreateRoute
+    }
   }
 }
 
+interface AuthenticatedCreateRouteChildren {
+  AuthenticatedCreateDetailsRoute: typeof AuthenticatedCreateDetailsRoute
+  AuthenticatedCreateMetaRoute: typeof AuthenticatedCreateMetaRoute
+  AuthenticatedCreateSelectRoute: typeof AuthenticatedCreateSelectRoute
+  AuthenticatedCreateUploadingRoute: typeof AuthenticatedCreateUploadingRoute
+}
+
+const AuthenticatedCreateRouteChildren: AuthenticatedCreateRouteChildren = {
+  AuthenticatedCreateDetailsRoute: AuthenticatedCreateDetailsRoute,
+  AuthenticatedCreateMetaRoute: AuthenticatedCreateMetaRoute,
+  AuthenticatedCreateSelectRoute: AuthenticatedCreateSelectRoute,
+  AuthenticatedCreateUploadingRoute: AuthenticatedCreateUploadingRoute,
+}
+
+const AuthenticatedCreateRouteWithChildren =
+  AuthenticatedCreateRoute._addFileChildren(AuthenticatedCreateRouteChildren)
+
+interface AuthenticatedRouteChildren {
+  AuthenticatedAnalyticsRoute: typeof AuthenticatedAnalyticsRoute
+  AuthenticatedCreateRoute: typeof AuthenticatedCreateRouteWithChildren
+  AuthenticatedProfileRoute: typeof AuthenticatedProfileRoute
+}
+
+const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
+  AuthenticatedAnalyticsRoute: AuthenticatedAnalyticsRoute,
+  AuthenticatedCreateRoute: AuthenticatedCreateRouteWithChildren,
+  AuthenticatedProfileRoute: AuthenticatedProfileRoute,
+}
+
+const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
+  AuthenticatedRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthenticatedRoute: AuthenticatedRouteWithChildren,
+  AuthRoute: AuthRoute,
+  DiscoverRoute: DiscoverRoute,
+  WatchlistRoute: WatchlistRoute,
+  WatchIdRoute: WatchIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
