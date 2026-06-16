@@ -1,11 +1,14 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { ChevronRight, Upload, Film, Clapperboard, BookOpen, History, Heart, Bookmark, Wallet, Settings, LogOut } from "lucide-react";
+import { ChevronRight, History, Heart, Bookmark, Wallet, Settings, LogOut, Pencil, Upload, Film } from "lucide-react";
 import { toast } from "sonner";
 
 import { MobileFrame } from "@/components/MobileFrame";
 import { BottomNav } from "@/components/BottomNav";
+import { Avatar } from "@/components/Avatar";
+import { Thumbnail } from "@/components/Thumbnail";
 import { supabase } from "@/integrations/supabase/client";
+import { profileByIdQuery, userVideosQuery } from "@/lib/queries";
 import { formatCount } from "@/lib/format";
 
 export const Route = createFileRoute("/_authenticated/profile")({
@@ -16,13 +19,8 @@ export const Route = createFileRoute("/_authenticated/profile")({
 function Profile() {
   const navigate = useNavigate();
   const { user } = Route.useRouteContext();
-  const { data: profile } = useQuery({
-    queryKey: ["profile", user.id],
-    queryFn: async () => {
-      const { data } = await supabase.from("profiles").select("*").eq("id", user.id).maybeSingle();
-      return data;
-    },
-  });
+  const { data: profile } = useQuery(profileByIdQuery(user.id));
+  const { data: myVideos = [] } = useQuery(userVideosQuery(user.id));
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
@@ -31,41 +29,66 @@ function Profile() {
   };
 
   const items = [
-    { icon: Upload, label: "My Uploads" },
-    { icon: Film, label: "My Series" },
-    { icon: History, label: "Watch History" },
-    { icon: Heart, label: "Liked Videos" },
-    { icon: Bookmark, label: "Saved Videos" },
-    { icon: Wallet, label: "My Earnings" },
-    { icon: Settings, label: "Settings" },
+    { icon: History, label: "Watch History", to: "/profile" as const },
+    { icon: Heart, label: "Liked Videos", to: "/profile" as const },
+    { icon: Bookmark, label: "Saved Videos", to: "/watchlist" as const },
+    { icon: Wallet, label: "Earnings & Analytics", to: "/analytics" as const },
+    { icon: Settings, label: "Settings", to: "/profile/edit" as const },
   ];
 
   return (
     <MobileFrame>
       <div className="pb-28">
         <div className="flex items-center gap-4 px-5 pt-8">
-          <div className="grid h-16 w-16 shrink-0 place-items-center rounded-full font-display text-xl font-black"
-            style={{ background: "linear-gradient(135deg, var(--color-brand), var(--color-brand-2))" }}>
-            {(profile?.display_name ?? user.email ?? "U").charAt(0).toUpperCase()}
-          </div>
+          <Avatar src={profile?.avatar_signed_url} name={profile?.display_name ?? user.email ?? "U"} size={64} />
           <div className="min-w-0 flex-1">
             <p className="truncate font-display text-lg font-bold">{profile?.display_name ?? "Creator"}</p>
             <p className="truncate text-xs text-muted-foreground">@{profile?.username ?? "you"}</p>
-            <span className="mt-1 inline-block rounded-full bg-brand/20 px-2 py-0.5 text-[10px] font-semibold text-brand-2">Creator</span>
+            {profile?.bio && <p className="mt-1 line-clamp-2 text-xs text-muted-foreground">{profile.bio}</p>}
           </div>
+          <Link
+            to="/profile/edit"
+            aria-label="Edit profile"
+            className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-surface ring-1 ring-border"
+          >
+            <Pencil className="h-4 w-4" />
+          </Link>
         </div>
 
         <div className="mx-5 mt-5 grid grid-cols-3 gap-2 rounded-2xl bg-surface p-4 ring-1 ring-border">
-          <Stat label="Posts" value="12" />
-          <Stat label="Followers" value="2.5K" />
-          <Stat label="Following" value="48" />
+          <Stat label="Posts" value={formatCount(profile?.posts_count ?? 0)} />
+          <Stat label="Followers" value={formatCount(profile?.followers_count ?? 0)} />
+          <Stat label="Following" value={formatCount(profile?.following_count ?? 0)} />
         </div>
 
-        <div className="mx-5 mt-5 rounded-2xl bg-surface ring-1 ring-border">
+        <div className="mt-6 px-5">
+          <div className="flex items-center justify-between">
+            <h3 className="font-display text-sm font-bold">My Uploads</h3>
+            <Link to="/create" className="flex items-center gap-1 text-[11px] text-brand-2">
+              <Upload className="h-3 w-3" /> Upload new
+            </Link>
+          </div>
+          {myVideos.length === 0 ? (
+            <div className="mt-3 rounded-2xl bg-surface p-6 text-center ring-1 ring-border">
+              <Film className="mx-auto h-6 w-6 text-muted-foreground" />
+              <p className="mt-2 text-xs text-muted-foreground">No uploads yet. Tap “Upload new” to publish your first.</p>
+            </div>
+          ) : (
+            <div className="mt-3 grid grid-cols-3 gap-2">
+              {myVideos.map((v) => (
+                <Link key={v.id} to="/watch/$id" params={{ id: v.id }} className="overflow-hidden rounded-xl">
+                  <Thumbnail src={v.thumbnail_signed_url} alt={v.title} className="aspect-[3/4] w-full" />
+                </Link>
+              ))}
+            </div>
+          )}
+        </div>
+
+        <div className="mx-5 mt-6 rounded-2xl bg-surface ring-1 ring-border">
           {items.map((it, idx) => (
             <Link
               key={it.label}
-              to={it.label === "My Earnings" ? "/analytics" : "/profile"}
+              to={it.to}
               className={`flex w-full items-center gap-3 px-4 py-3.5 ${idx < items.length - 1 ? "border-b border-border" : ""}`}
             >
               <it.icon className="h-4 w-4 text-brand-2" />
