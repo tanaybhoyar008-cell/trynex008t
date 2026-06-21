@@ -19,14 +19,34 @@ export const Route = createFileRoute("/_authenticated/profile")({
 
 function Profile() {
   const navigate = useNavigate();
+  const qc = useQueryClient();
   const { user } = Route.useRouteContext();
   const { data: profile } = useQuery(profileByIdQuery(user.id));
   const { data: myVideos = [] } = useQuery(userVideosQuery(user.id));
+  const [deletingId, setDeletingId] = useState<string | null>(null);
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
     toast.success("Signed out");
     navigate({ to: "/auth" });
+  };
+
+  const handleDelete = async (v: { id: string; title: string; video_url: string | null; thumbnail_url: string | null }) => {
+    if (!confirm(`Delete "${v.title}"? This cannot be undone.`)) return;
+    setDeletingId(v.id);
+    try {
+      if (v.video_url) await supabase.storage.from("videos").remove([v.video_url]);
+      if (v.thumbnail_url) await supabase.storage.from("thumbnails").remove([v.thumbnail_url]);
+      const { error } = await supabase.from("videos").delete().eq("id", v.id);
+      if (error) throw error;
+      toast.success("Video deleted");
+      await qc.invalidateQueries({ queryKey: ["videos"] });
+      await qc.invalidateQueries({ queryKey: ["profile"] });
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Failed to delete");
+    } finally {
+      setDeletingId(null);
+    }
   };
 
   const items = [
