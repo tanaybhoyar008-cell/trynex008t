@@ -16,6 +16,7 @@ import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as WatchIdRouteImport } from './routes/watch.$id'
 import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated.profile'
+import { Route as AuthenticatedNotificationsRouteImport } from './routes/_authenticated.notifications'
 import { Route as AuthenticatedCreateRouteImport } from './routes/_authenticated.create'
 import { Route as AuthenticatedAnalyticsRouteImport } from './routes/_authenticated.analytics'
 import { Route as AuthenticatedProfileEditRouteImport } from './routes/_authenticated.profile.edit'
@@ -54,6 +55,12 @@ const AuthenticatedProfileRoute = AuthenticatedProfileRouteImport.update({
   path: '/profile',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedNotificationsRoute =
+  AuthenticatedNotificationsRouteImport.update({
+    id: '/notifications',
+    path: '/notifications',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const AuthenticatedCreateRoute = AuthenticatedCreateRouteImport.update({
   id: '/create',
   path: '/create',
@@ -78,6 +85,7 @@ export interface FileRoutesByFullPath {
   '/watchlist': typeof WatchlistRoute
   '/analytics': typeof AuthenticatedAnalyticsRoute
   '/create': typeof AuthenticatedCreateRoute
+  '/notifications': typeof AuthenticatedNotificationsRoute
   '/profile': typeof AuthenticatedProfileRouteWithChildren
   '/watch/$id': typeof WatchIdRoute
   '/profile/edit': typeof AuthenticatedProfileEditRoute
@@ -89,6 +97,7 @@ export interface FileRoutesByTo {
   '/watchlist': typeof WatchlistRoute
   '/analytics': typeof AuthenticatedAnalyticsRoute
   '/create': typeof AuthenticatedCreateRoute
+  '/notifications': typeof AuthenticatedNotificationsRoute
   '/profile': typeof AuthenticatedProfileRouteWithChildren
   '/watch/$id': typeof WatchIdRoute
   '/profile/edit': typeof AuthenticatedProfileEditRoute
@@ -102,6 +111,7 @@ export interface FileRoutesById {
   '/watchlist': typeof WatchlistRoute
   '/_authenticated/analytics': typeof AuthenticatedAnalyticsRoute
   '/_authenticated/create': typeof AuthenticatedCreateRoute
+  '/_authenticated/notifications': typeof AuthenticatedNotificationsRoute
   '/_authenticated/profile': typeof AuthenticatedProfileRouteWithChildren
   '/watch/$id': typeof WatchIdRoute
   '/_authenticated/profile/edit': typeof AuthenticatedProfileEditRoute
@@ -115,6 +125,7 @@ export interface FileRouteTypes {
     | '/watchlist'
     | '/analytics'
     | '/create'
+    | '/notifications'
     | '/profile'
     | '/watch/$id'
     | '/profile/edit'
@@ -126,6 +137,7 @@ export interface FileRouteTypes {
     | '/watchlist'
     | '/analytics'
     | '/create'
+    | '/notifications'
     | '/profile'
     | '/watch/$id'
     | '/profile/edit'
@@ -138,6 +150,7 @@ export interface FileRouteTypes {
     | '/watchlist'
     | '/_authenticated/analytics'
     | '/_authenticated/create'
+    | '/_authenticated/notifications'
     | '/_authenticated/profile'
     | '/watch/$id'
     | '/_authenticated/profile/edit'
@@ -203,6 +216,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedProfileRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/notifications': {
+      id: '/_authenticated/notifications'
+      path: '/notifications'
+      fullPath: '/notifications'
+      preLoaderRoute: typeof AuthenticatedNotificationsRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/create': {
       id: '/_authenticated/create'
       path: '/create'
@@ -241,12 +261,14 @@ const AuthenticatedProfileRouteWithChildren =
 interface AuthenticatedRouteChildren {
   AuthenticatedAnalyticsRoute: typeof AuthenticatedAnalyticsRoute
   AuthenticatedCreateRoute: typeof AuthenticatedCreateRoute
+  AuthenticatedNotificationsRoute: typeof AuthenticatedNotificationsRoute
   AuthenticatedProfileRoute: typeof AuthenticatedProfileRouteWithChildren
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedAnalyticsRoute: AuthenticatedAnalyticsRoute,
   AuthenticatedCreateRoute: AuthenticatedCreateRoute,
+  AuthenticatedNotificationsRoute: AuthenticatedNotificationsRoute,
   AuthenticatedProfileRoute: AuthenticatedProfileRouteWithChildren,
 }
 
