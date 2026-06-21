@@ -1,7 +1,8 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useQuery } from "@tanstack/react-query";
-import { ChevronRight, History, Heart, Bookmark, Wallet, Settings, LogOut, Pencil, Upload, Film } from "lucide-react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { ChevronRight, History, Heart, Bookmark, Wallet, Settings, LogOut, Pencil, Upload, Film, Trash2 } from "lucide-react";
 import { toast } from "sonner";
+import { useState } from "react";
 
 import { MobileFrame } from "@/components/MobileFrame";
 import { BottomNav } from "@/components/BottomNav";
