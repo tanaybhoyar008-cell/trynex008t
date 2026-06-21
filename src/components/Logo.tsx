@@ -1,7 +1,12 @@
+import logoAsset from "@/assets/trynex-logo.png.asset.json";
+
 export function Logo({ className = "" }: { className?: string }) {
   return (
-    <span className={`font-display font-black tracking-tight ${className}`}>
-      TRY<span className="text-gradient">NEX</span>
-    </span>
+    <img
+      src={logoAsset.url}
+      alt="TRYNEX"
+      className={`inline-block w-auto select-none ${className}`}
+      draggable={false}
+    />
   );
 }

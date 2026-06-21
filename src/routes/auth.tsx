@@ -83,7 +83,7 @@ function AuthPage() {
     <MobileFrame>
       <div className="flex min-h-screen flex-col px-6 pt-16 pb-10">
         <div className="text-center">
-          <Logo className="text-4xl" />
+          <Logo className="h-14" />
           <h1 className="mt-8 font-display text-3xl font-bold">Welcome {mode === "signin" ? "back" : ""}!</h1>
           <p className="mt-1 text-sm text-muted-foreground">
             {mode === "signin" ? "Login to Continue" : "Create your TRYNEX account"}
