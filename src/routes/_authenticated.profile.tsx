@@ -1,7 +1,8 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useQuery } from "@tanstack/react-query";
-import { ChevronRight, History, Heart, Bookmark, Wallet, Settings, LogOut, Pencil, Upload, Film } from "lucide-react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { ChevronRight, History, Heart, Bookmark, Wallet, Settings, LogOut, Pencil, Upload, Film, Trash2 } from "lucide-react";
 import { toast } from "sonner";
+import { useState } from "react";
 
 import { MobileFrame } from "@/components/MobileFrame";
 import { BottomNav } from "@/components/BottomNav";
@@ -18,14 +19,34 @@ export const Route = createFileRoute("/_authenticated/profile")({
 
 function Profile() {
   const navigate = useNavigate();
+  const qc = useQueryClient();
   const { user } = Route.useRouteContext();
   const { data: profile } = useQuery(profileByIdQuery(user.id));
   const { data: myVideos = [] } = useQuery(userVideosQuery(user.id));
+  const [deletingId, setDeletingId] = useState<string | null>(null);
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
     toast.success("Signed out");
     navigate({ to: "/auth" });
+  };
+
+  const handleDelete = async (v: { id: string; title: string; video_url: string | null; thumbnail_url: string | null }) => {
+    if (!confirm(`Delete "${v.title}"? This cannot be undone.`)) return;
+    setDeletingId(v.id);
+    try {
+      if (v.video_url) await supabase.storage.from("videos").remove([v.video_url]);
+      if (v.thumbnail_url) await supabase.storage.from("thumbnails").remove([v.thumbnail_url]);
+      const { error } = await supabase.from("videos").delete().eq("id", v.id);
+      if (error) throw error;
+      toast.success("Video deleted");
+      await qc.invalidateQueries({ queryKey: ["videos"] });
+      await qc.invalidateQueries({ queryKey: ["profile"] });
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Failed to delete");
+    } finally {
+      setDeletingId(null);
+    }
   };
 
   const items = [
@@ -76,9 +97,19 @@ function Profile() {
           ) : (
             <div className="mt-3 grid grid-cols-3 gap-2">
               {myVideos.map((v) => (
-                <Link key={v.id} to="/watch/$id" params={{ id: v.id }} className="overflow-hidden rounded-xl">
-                  <Thumbnail src={v.thumbnail_signed_url} alt={v.title} className="aspect-[3/4] w-full" />
-                </Link>
+                <div key={v.id} className="relative overflow-hidden rounded-xl">
+                  <Link to="/watch/$id" params={{ id: v.id }} className="block">
+                    <Thumbnail src={v.thumbnail_signed_url} alt={v.title} className="aspect-[3/4] w-full" />
+                  </Link>
+                  <button
+                    onClick={() => handleDelete(v)}
+                    disabled={deletingId === v.id}
+                    aria-label="Delete video"
+                    className="absolute right-1.5 top-1.5 grid h-7 w-7 place-items-center rounded-full bg-black/70 text-destructive ring-1 ring-border backdrop-blur disabled:opacity-50"
+                  >
+                    <Trash2 className="h-3.5 w-3.5" />
+                  </button>
+                </div>
               ))}
             </div>
           )}
