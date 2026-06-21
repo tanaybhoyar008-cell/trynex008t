@@ -4,6 +4,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   ChevronLeft, Maximize2, Minimize2, Play, Pause, MoreVertical,
   ThumbsUp, MessageCircle, Share2, Bookmark, Check, Film,
+  SkipBack, SkipForward,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -113,18 +114,49 @@ function Watch() {
   };
   const toggleFullscreen = async () => {
     const el = containerRef.current; if (!el) return;
-    if (!document.fullscreenElement) { await el.requestFullscreen?.(); setFullscreen(true); }
-    else { await document.exitFullscreen?.(); setFullscreen(false); }
+    try {
+      if (!document.fullscreenElement) {
+        await el.requestFullscreen?.();
+        setFullscreen(true);
+        const orient = (screen as any).orientation;
+        if (orient?.lock) { try { await orient.lock("landscape"); } catch {} }
+      } else {
+        const orient = (screen as any).orientation;
+        if (orient?.unlock) { try { orient.unlock(); } catch {} }
+        await document.exitFullscreen?.();
+        setFullscreen(false);
+      }
+    } catch {}
   };
+  useEffect(() => {
+    const onChange = () => setFullscreen(!!document.fullscreenElement);
+    document.addEventListener("fullscreenchange", onChange);
+    return () => document.removeEventListener("fullscreenchange", onChange);
+  }, []);
   const onTime = () => {
     const v = videoRef.current; if (!v) return;
     setCurrent(v.currentTime);
     if (v.duration) { setDuration(v.duration); setProgress((v.currentTime / v.duration) * 100); }
   };
-  const seek = (e: React.MouseEvent<HTMLDivElement>) => {
+  const seekFromPointer = (clientX: number, target: HTMLElement) => {
     const v = videoRef.current; if (!v || !v.duration) return;
-    const rect = e.currentTarget.getBoundingClientRect();
-    v.currentTime = ((e.clientX - rect.left) / rect.width) * v.duration;
+    const rect = target.getBoundingClientRect();
+    const ratio = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
+    v.currentTime = ratio * v.duration;
+  };
+  const onSeekPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+    const el = e.currentTarget;
+    el.setPointerCapture(e.pointerId);
+    seekFromPointer(e.clientX, el);
+  };
+  const onSeekPointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (e.currentTarget.hasPointerCapture(e.pointerId)) {
+      seekFromPointer(e.clientX, e.currentTarget);
+    }
+  };
+  const skip = (delta: number) => {
+    const v = videoRef.current; if (!v) return;
+    v.currentTime = Math.max(0, Math.min((v.duration || 0), v.currentTime + delta));
   };
 
   const requireAuth = () => {
@@ -207,15 +239,30 @@ function Watch() {
             <MoreSheet speed={speed} setSpeed={setSpeed} />
           </div>
 
-          {!playing && video.video_signed_url && (
-            <button onClick={togglePlay} className="absolute left-1/2 top-1/2 grid h-16 w-16 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full btn-gradient">
-              <Play className="h-7 w-7 fill-current" />
-            </button>
-          )}
-          {playing && (
-            <button onClick={togglePlay} aria-label="Pause" className="absolute inset-0">
-              <span className="sr-only">Pause</span>
-            </button>
+          {video.video_signed_url && (
+            <div className="pointer-events-none absolute inset-0 flex items-center justify-center gap-6">
+              <button
+                onClick={(e) => { e.stopPropagation(); skip(-10); }}
+                className="pointer-events-auto grid h-12 w-12 place-items-center rounded-full bg-black/50 text-white"
+                aria-label="Back 10 seconds"
+              >
+                <SkipBack className="h-5 w-5" />
+              </button>
+              <button
+                onClick={(e) => { e.stopPropagation(); togglePlay(); }}
+                className="pointer-events-auto grid h-16 w-16 place-items-center rounded-full btn-gradient"
+                aria-label={playing ? "Pause" : "Play"}
+              >
+                {playing ? <Pause className="h-7 w-7 fill-current" /> : <Play className="h-7 w-7 fill-current" />}
+              </button>
+              <button
+                onClick={(e) => { e.stopPropagation(); skip(10); }}
+                className="pointer-events-auto grid h-12 w-12 place-items-center rounded-full bg-black/50 text-white"
+                aria-label="Forward 10 seconds"
+              >
+                <SkipForward className="h-5 w-5" />
+              </button>
+            </div>
           )}
 
           <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent p-3">
@@ -228,8 +275,18 @@ function Watch() {
                 </button>
               </div>
             </div>
-            <div onClick={seek} className="h-1 cursor-pointer rounded-full bg-white/20">
-              <div className="h-full rounded-full" style={{ width: `${progress}%`, background: "linear-gradient(90deg, var(--color-brand), var(--color-brand-2))" }} />
+            <div
+              onPointerDown={onSeekPointerDown}
+              onPointerMove={onSeekPointerMove}
+              className="relative -my-2 py-2 cursor-pointer touch-none"
+            >
+              <div className="h-1.5 rounded-full bg-white/20">
+                <div className="h-full rounded-full" style={{ width: `${progress}%`, background: "linear-gradient(90deg, var(--color-brand), var(--color-brand-2))" }} />
+              </div>
+              <div
+                className="absolute top-1/2 -translate-y-1/2 h-3 w-3 -ml-1.5 rounded-full bg-white shadow"
+                style={{ left: `${progress}%` }}
+              />
             </div>
           </div>
         </div>
