@@ -42,14 +42,14 @@ function Home() {
     <MobileFrame>
       <div className="pb-28">
         <header className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3 px-5 pt-6">
-          <Logo className="text-2xl" />
+          <Logo className="h-9" />
           <div className="flex items-center gap-2">
             <Link to="/discover" aria-label="Search" className="grid h-10 w-10 place-items-center rounded-full bg-surface ring-1 ring-border">
               <Search className="h-4 w-4" />
             </Link>
-            <button aria-label="Notifications" className="grid h-10 w-10 place-items-center rounded-full bg-surface ring-1 ring-border">
+            <Link to="/notifications" aria-label="Notifications" className="grid h-10 w-10 place-items-center rounded-full bg-surface ring-1 ring-border">
               <Bell className="h-4 w-4" />
-            </button>
+            </Link>
           </div>
         </header>
 
