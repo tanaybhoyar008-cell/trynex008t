@@ -97,9 +97,19 @@ function Profile() {
           ) : (
             <div className="mt-3 grid grid-cols-3 gap-2">
               {myVideos.map((v) => (
-                <Link key={v.id} to="/watch/$id" params={{ id: v.id }} className="overflow-hidden rounded-xl">
-                  <Thumbnail src={v.thumbnail_signed_url} alt={v.title} className="aspect-[3/4] w-full" />
-                </Link>
+                <div key={v.id} className="relative overflow-hidden rounded-xl">
+                  <Link to="/watch/$id" params={{ id: v.id }} className="block">
+                    <Thumbnail src={v.thumbnail_signed_url} alt={v.title} className="aspect-[3/4] w-full" />
+                  </Link>
+                  <button
+                    onClick={() => handleDelete(v)}
+                    disabled={deletingId === v.id}
+                    aria-label="Delete video"
+                    className="absolute right-1.5 top-1.5 grid h-7 w-7 place-items-center rounded-full bg-black/70 text-destructive ring-1 ring-border backdrop-blur disabled:opacity-50"
+                  >
+                    <Trash2 className="h-3.5 w-3.5" />
+                  </button>
+                </div>
               ))}
             </div>
           )}
