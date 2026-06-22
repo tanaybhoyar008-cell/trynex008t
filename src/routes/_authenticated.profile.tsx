@@ -54,7 +54,7 @@ function Profile() {
     { icon: Heart, label: "Liked Videos", to: "/profile" as const },
     { icon: Bookmark, label: "Saved Videos", to: "/watchlist" as const },
     { icon: Wallet, label: "Earnings & Analytics", to: "/analytics" as const },
-    { icon: Settings, label: "Settings", to: "/profile/edit" as const },
+    { icon: Settings, label: "Settings", to: "/settings" as const },
   ];
 
   return (

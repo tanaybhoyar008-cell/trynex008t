@@ -15,6 +15,8 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as WatchIdRouteImport } from './routes/watch.$id'
+import { Route as LegalDocRouteImport } from './routes/legal.$doc'
+import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated.settings'
 import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated.profile'
 import { Route as AuthenticatedNotificationsRouteImport } from './routes/_authenticated.notifications'
 import { Route as AuthenticatedCreateRouteImport } from './routes/_authenticated.create'
@@ -49,6 +51,16 @@ const WatchIdRoute = WatchIdRouteImport.update({
   id: '/watch/$id',
   path: '/watch/$id',
   getParentRoute: () => rootRouteImport,
+} as any)
+const LegalDocRoute = LegalDocRouteImport.update({
+  id: '/legal/$doc',
+  path: '/legal/$doc',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => AuthenticatedRoute,
 } as any)
 const AuthenticatedProfileRoute = AuthenticatedProfileRouteImport.update({
   id: '/profile',
@@ -87,6 +99,8 @@ export interface FileRoutesByFullPath {
   '/create': typeof AuthenticatedCreateRoute
   '/notifications': typeof AuthenticatedNotificationsRoute
   '/profile': typeof AuthenticatedProfileRouteWithChildren
+  '/settings': typeof AuthenticatedSettingsRoute
+  '/legal/$doc': typeof LegalDocRoute
   '/watch/$id': typeof WatchIdRoute
   '/profile/edit': typeof AuthenticatedProfileEditRoute
 }
@@ -99,6 +113,8 @@ export interface FileRoutesByTo {
   '/create': typeof AuthenticatedCreateRoute
   '/notifications': typeof AuthenticatedNotificationsRoute
   '/profile': typeof AuthenticatedProfileRouteWithChildren
+  '/settings': typeof AuthenticatedSettingsRoute
+  '/legal/$doc': typeof LegalDocRoute
   '/watch/$id': typeof WatchIdRoute
   '/profile/edit': typeof AuthenticatedProfileEditRoute
 }
@@ -113,6 +129,8 @@ export interface FileRoutesById {
   '/_authenticated/create': typeof AuthenticatedCreateRoute
   '/_authenticated/notifications': typeof AuthenticatedNotificationsRoute
   '/_authenticated/profile': typeof AuthenticatedProfileRouteWithChildren
+  '/_authenticated/settings': typeof AuthenticatedSettingsRoute
+  '/legal/$doc': typeof LegalDocRoute
   '/watch/$id': typeof WatchIdRoute
   '/_authenticated/profile/edit': typeof AuthenticatedProfileEditRoute
 }
@@ -127,6 +145,8 @@ export interface FileRouteTypes {
     | '/create'
     | '/notifications'
     | '/profile'
+    | '/settings'
+    | '/legal/$doc'
     | '/watch/$id'
     | '/profile/edit'
   fileRoutesByTo: FileRoutesByTo
@@ -139,6 +159,8 @@ export interface FileRouteTypes {
     | '/create'
     | '/notifications'
     | '/profile'
+    | '/settings'
+    | '/legal/$doc'
     | '/watch/$id'
     | '/profile/edit'
   id:
@@ -152,6 +174,8 @@ export interface FileRouteTypes {
     | '/_authenticated/create'
     | '/_authenticated/notifications'
     | '/_authenticated/profile'
+    | '/_authenticated/settings'
+    | '/legal/$doc'
     | '/watch/$id'
     | '/_authenticated/profile/edit'
   fileRoutesById: FileRoutesById
@@ -162,6 +186,7 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   DiscoverRoute: typeof DiscoverRoute
   WatchlistRoute: typeof WatchlistRoute
+  LegalDocRoute: typeof LegalDocRoute
   WatchIdRoute: typeof WatchIdRoute
 }
 
@@ -208,6 +233,20 @@ declare module '@tanstack/react-router' {
       fullPath: '/watch/$id'
       preLoaderRoute: typeof WatchIdRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/legal/$doc': {
+      id: '/legal/$doc'
+      path: '/legal/$doc'
+      fullPath: '/legal/$doc'
+      preLoaderRoute: typeof LegalDocRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/settings': {
+      id: '/_authenticated/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof AuthenticatedSettingsRouteImport
+      parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/profile': {
       id: '/_authenticated/profile'
@@ -263,6 +302,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedCreateRoute: typeof AuthenticatedCreateRoute
   AuthenticatedNotificationsRoute: typeof AuthenticatedNotificationsRoute
   AuthenticatedProfileRoute: typeof AuthenticatedProfileRouteWithChildren
+  AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
@@ -270,6 +310,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedCreateRoute: AuthenticatedCreateRoute,
   AuthenticatedNotificationsRoute: AuthenticatedNotificationsRoute,
   AuthenticatedProfileRoute: AuthenticatedProfileRouteWithChildren,
+  AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
 }
 
 const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
@@ -282,6 +323,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   DiscoverRoute: DiscoverRoute,
   WatchlistRoute: WatchlistRoute,
+  LegalDocRoute: LegalDocRoute,
   WatchIdRoute: WatchIdRoute,
 }
 export const routeTree = rootRouteImport
