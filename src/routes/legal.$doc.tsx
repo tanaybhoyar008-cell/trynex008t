@@ -109,7 +109,7 @@ function LegalPage() {
           </div>
         </header>
         <article className="mx-5 mt-5 space-y-3 rounded-2xl bg-surface p-5 text-sm leading-relaxed ring-1 ring-border">
-          {doc.body.map((p, i) => (
+          {doc.body.map((p: string, i: number) => (
             <p key={i} className={i === 0 ? "text-foreground" : "text-muted-foreground"}>{p}</p>
           ))}
         </article>
