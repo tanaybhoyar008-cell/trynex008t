@@ -64,6 +64,12 @@ function Watch() {
 
   useEffect(() => { if (videoRef.current) videoRef.current.playbackRate = speed; }, [speed]);
 
+  useEffect(() => {
+    const onChange = () => setFullscreen(!!document.fullscreenElement);
+    document.addEventListener("fullscreenchange", onChange);
+    return () => document.removeEventListener("fullscreenchange", onChange);
+  }, []);
+
   // Liked / saved / followed state
   const [liked, setLiked] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -128,11 +134,6 @@ function Watch() {
       }
     } catch {}
   };
-  useEffect(() => {
-    const onChange = () => setFullscreen(!!document.fullscreenElement);
-    document.addEventListener("fullscreenchange", onChange);
-    return () => document.removeEventListener("fullscreenchange", onChange);
-  }, []);
   const onTime = () => {
     const v = videoRef.current; if (!v) return;
     setCurrent(v.currentTime);
