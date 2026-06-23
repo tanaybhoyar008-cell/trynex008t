@@ -17,7 +17,7 @@ import { videoByIdQuery, videoCommentsQuery, publicVideosQuery } from "@/lib/que
 import { formatCount, formatDuration, timeAgo } from "@/lib/format";
 
 export const Route = createFileRoute("/watch/$id")({
-  head: () => ({ meta: [{ title: "Watch — TRYNEX" }] }),
+  head: () => ({ meta: [{ title: "Watch — Texon" }] }),
   notFoundComponent: () => (
     <MobileFrame>
       <div className="grid min-h-screen place-items-center p-8 text-center">
@@ -36,58 +36,7 @@ const SPEEDS = [0.5, 0.75, 1, 1.25, 1.5, 2] as const;
 
 function Watch() {
   const { id } = Route.useParams();
-  const navigate = useNavigate();
-  const queryClient = useQueryClient();
   const { data: video, isLoading } = useQuery(videoByIdQuery(id));
-  const { data: nextList = [] } = useQuery(publicVideosQuery());
-  const [userId, setUserId] = useState<string | null>(null);
-
-  useEffect(() => {
-    supabase.auth.getUser().then(({ data }) => setUserId(data.user?.id ?? null));
-  }, []);
-
-  // increment view once per load
-  useEffect(() => {
-    if (!video?.id) return;
-    supabase.rpc("increment_video_views", { p_video_id: video.id });
-  }, [video?.id]);
-
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [playing, setPlaying] = useState(false);
-  const [progress, setProgress] = useState(0);
-  const [current, setCurrent] = useState(0);
-  const [duration, setDuration] = useState(0);
-  const [fullscreen, setFullscreen] = useState(false);
-  const [speed, setSpeed] = useState<number>(1);
-  const [showComments, setShowComments] = useState(false);
-
-  useEffect(() => { if (videoRef.current) videoRef.current.playbackRate = speed; }, [speed]);
-
-  useEffect(() => {
-    const onChange = () => setFullscreen(!!document.fullscreenElement);
-    document.addEventListener("fullscreenchange", onChange);
-    return () => document.removeEventListener("fullscreenchange", onChange);
-  }, []);
-
-  // Liked / saved / followed state
-  const [liked, setLiked] = useState(false);
-  const [saved, setSaved] = useState(false);
-  const [followed, setFollowed] = useState(false);
-
-  useEffect(() => {
-    if (!userId || !video) return;
-    (async () => {
-      const [{ data: l }, { data: s }, { data: f }] = await Promise.all([
-        supabase.from("likes").select("video_id").eq("user_id", userId).eq("video_id", video.id).maybeSingle(),
-        supabase.from("saved_videos").select("video_id").eq("user_id", userId).eq("video_id", video.id).maybeSingle(),
-        video.creator?.id
-          ? supabase.from("follows").select("follower_id").eq("follower_id", userId).eq("following_id", video.creator.id).maybeSingle()
-          : Promise.resolve({ data: null }),
-      ]);
-      setLiked(!!l); setSaved(!!s); setFollowed(!!f);
-    })();
-  }, [userId, video?.id, video?.creator?.id]);
 
   if (isLoading) {
     return (
@@ -113,6 +62,60 @@ function Watch() {
       </MobileFrame>
     );
   }
+  return <WatchInner key={video.id} video={video} />;
+}
+
+function WatchInner({ video }: { video: any }) {
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  const { data: nextList = [] } = useQuery(publicVideosQuery());
+  const [userId, setUserId] = useState<string | null>(null);
+
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data }) => setUserId(data.user?.id ?? null));
+  }, []);
+
+  useEffect(() => {
+    if (!video?.id) return;
+    supabase.rpc("increment_video_views", { p_video_id: video.id });
+  }, [video?.id]);
+
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [playing, setPlaying] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [current, setCurrent] = useState(0);
+  const [duration, setDuration] = useState(0);
+  const [fullscreen, setFullscreen] = useState(false);
+  const [speed, setSpeed] = useState<number>(1);
+  const [showComments, setShowComments] = useState(false);
+
+  useEffect(() => { if (videoRef.current) videoRef.current.playbackRate = speed; }, [speed]);
+
+  useEffect(() => {
+    const onChange = () => setFullscreen(!!document.fullscreenElement);
+    document.addEventListener("fullscreenchange", onChange);
+    return () => document.removeEventListener("fullscreenchange", onChange);
+  }, []);
+
+  const [liked, setLiked] = useState(false);
+  const [saved, setSaved] = useState(false);
+  const [followed, setFollowed] = useState(false);
+
+  useEffect(() => {
+    if (!userId || !video) return;
+    (async () => {
+      const [{ data: l }, { data: s }, { data: f }] = await Promise.all([
+        supabase.from("likes").select("video_id").eq("user_id", userId).eq("video_id", video.id).maybeSingle(),
+        supabase.from("saved_videos").select("video_id").eq("user_id", userId).eq("video_id", video.id).maybeSingle(),
+        video.creator?.id
+          ? supabase.from("follows").select("follower_id").eq("follower_id", userId).eq("following_id", video.creator.id).maybeSingle()
+          : Promise.resolve({ data: null }),
+      ]);
+      setLiked(!!l); setSaved(!!s); setFollowed(!!f);
+    })();
+  }, [userId, video?.id, video?.creator?.id]);
+
 
   const togglePlay = () => {
     const v = videoRef.current; if (!v) return;

@@ -13,7 +13,7 @@ import { profileByIdQuery, userVideosQuery } from "@/lib/queries";
 import { formatCount } from "@/lib/format";
 
 export const Route = createFileRoute("/_authenticated/profile")({
-  head: () => ({ meta: [{ title: "Profile — TRYNEX" }] }),
+  head: () => ({ meta: [{ title: "Profile — Texon" }] }),
   component: Profile,
 });
 

@@ -26,7 +26,7 @@ export function SplashScreen() {
       <div className="relative flex flex-col items-center">
         <img
           src={logoAsset.url}
-          alt="TRYNEX"
+          alt="Texon"
           className="splash-logo w-[78vw] max-w-[420px] drop-shadow-[0_0_40px_rgba(56,189,248,0.45)]"
           draggable={false}
         />

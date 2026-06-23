@@ -9,13 +9,13 @@ const docs: Record<string, Doc> = {
     title: "Terms & Conditions",
     updated: "June 2026",
     body: [
-      "Welcome to Trynex. By using the app you agree to these terms.",
+      "Welcome to Texon. By using the app you agree to these terms.",
       "1. Users must not upload illegal, harmful, or copyrighted content.",
-      "2. Trynex may remove content or ban users if rules are broken.",
+      "2. Texon may remove content or ban users if rules are broken.",
       "3. Users are fully responsible for the content they post.",
       "4. App features and these terms may change at any time.",
       "5. Spam, abuse, harassment, and fake engagement are not allowed.",
-      "6. You must be at least 13 years old to use Trynex.",
+      "6. You must be at least 13 years old to use Texon.",
       "7. We may suspend accounts that violate these rules without prior notice.",
     ],
   },
@@ -36,7 +36,7 @@ const docs: Record<string, Doc> = {
     title: "Community Guidelines",
     updated: "June 2026",
     body: [
-      "Trynex is for everyone. Help us keep it safe and friendly.",
+      "Texon is for everyone. Help us keep it safe and friendly.",
       "• Be respectful to other users.",
       "• No harassment, bullying, or hate speech.",
       "• No adult, violent, or graphic content.",
@@ -49,10 +49,10 @@ const docs: Record<string, Doc> = {
     title: "Content Policy",
     updated: "June 2026",
     body: [
-      "You own the content you upload, but you grant Trynex a license to display it in the app.",
+      "You own the content you upload, but you grant Texon a license to display it in the app.",
       "• Only upload content you have the rights to share.",
       "• Do not upload content that infringes copyright or trademarks.",
-      "• Trynex may remove content that violates this policy.",
+      "• Texon may remove content that violates this policy.",
       "• Repeat infringement may lead to permanent account removal.",
     ],
   },
@@ -60,7 +60,7 @@ const docs: Record<string, Doc> = {
     title: "Cookie Policy",
     updated: "June 2026",
     body: [
-      "We use cookies and local storage to make Trynex work.",
+      "We use cookies and local storage to make Texon work.",
       "• Essential: keep you signed in and remember your settings.",
       "• Preferences: dark mode, language, data saver.",
       "• Analytics (basic): help us understand what people enjoy.",
@@ -68,13 +68,13 @@ const docs: Record<string, Doc> = {
     ],
   },
   about: {
-    title: "About Trynex",
+    title: "About Texon",
     updated: "June 2026",
     body: [
-      "Trynex is a short-video app for creators and viewers who love quick, engaging stories.",
+      "Texon is a short-video app for creators and viewers who love quick, engaging stories.",
       "Built mobile-first, lightweight, and made to feel fast on any connection.",
       "Version 1.0.0",
-      "© Trynex. All rights reserved.",
+      "© Texon. All rights reserved.",
     ],
   },
 };
@@ -87,7 +87,7 @@ export const Route = createFileRoute("/legal/$doc")({
   },
   head: ({ loaderData }) =>
     loaderData
-      ? { meta: [{ title: `${loaderData.title} — TRYNEX` }, { name: "description", content: loaderData.body[0] }] }
+      ? { meta: [{ title: `${loaderData.title} — Texon` }, { name: "description", content: loaderData.body[0] }] }
       : {},
   errorComponent: () => <Fallback title="Something went wrong" />,
   notFoundComponent: () => <Fallback title="Document not found" />,

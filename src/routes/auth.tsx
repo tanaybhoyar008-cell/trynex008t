@@ -21,8 +21,8 @@ export const Route = createFileRoute("/auth")({
   },
   head: () => ({
     meta: [
-      { title: "Sign in — TRYNEX" },
-      { name: "description", content: "Sign in to TRYNEX to watch and create web series, short films, and stories." },
+      { title: "Sign in — Texon" },
+      { name: "description", content: "Sign in to Texon to watch and create web series, short films, and stories." },
     ],
   }),
   component: AuthPage,
@@ -48,7 +48,7 @@ function AuthPage() {
           options: { emailRedirectTo: window.location.origin },
         });
         if (error) throw error;
-        toast.success("Welcome to TRYNEX!");
+        toast.success("Welcome to Texon!");
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
@@ -86,7 +86,7 @@ function AuthPage() {
           <Logo className="h-14" />
           <h1 className="mt-8 font-display text-3xl font-bold">Welcome {mode === "signin" ? "back" : ""}!</h1>
           <p className="mt-1 text-sm text-muted-foreground">
-            {mode === "signin" ? "Login to Continue" : "Create your TRYNEX account"}
+            {mode === "signin" ? "Login to Continue" : "Create your Texon account"}
           </p>
         </div>
 

@@ -13,9 +13,9 @@ import { formatCount } from "@/lib/format";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "TRYNEX — Watch web series, short films & stories" },
-      { name: "description", content: "Stream original web series, short films, and creator stories on TRYNEX. Create, watch, earn." },
-      { property: "og:title", content: "TRYNEX — Create. Watch. Earn." },
+      { title: "Texon — Watch web series, short films & stories" },
+      { name: "description", content: "Stream original web series, short films, and creator stories on Texon. Create, watch, earn." },
+      { property: "og:title", content: "Texon — Create. Watch. Earn." },
       { property: "og:description", content: "Stream original web series, short films, and creator stories." },
     ],
   }),
