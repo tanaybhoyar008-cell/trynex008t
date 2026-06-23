@@ -11,7 +11,7 @@ import type { Database } from "@/integrations/supabase/types";
 type VideoType = Database["public"]["Enums"]["video_type"];
 
 export const Route = createFileRoute("/_authenticated/create")({
-  head: () => ({ meta: [{ title: "Upload — TRYNEX" }] }),
+  head: () => ({ meta: [{ title: "Upload — Texon" }] }),
   component: Create,
 });
 

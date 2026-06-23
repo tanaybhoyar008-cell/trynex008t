@@ -10,7 +10,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { profileByIdQuery } from "@/lib/queries";
 
 export const Route = createFileRoute("/_authenticated/profile/edit")({
-  head: () => ({ meta: [{ title: "Edit Profile — TRYNEX" }] }),
+  head: () => ({ meta: [{ title: "Edit Profile — Texon" }] }),
   component: EditProfile,
 });
 

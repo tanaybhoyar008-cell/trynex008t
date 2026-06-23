@@ -10,7 +10,7 @@ import { savedVideosQuery } from "@/lib/queries";
 import { formatDuration } from "@/lib/format";
 
 export const Route = createFileRoute("/watchlist")({
-  head: () => ({ meta: [{ title: "Watchlist — TRYNEX" }] }),
+  head: () => ({ meta: [{ title: "Watchlist — Texon" }] }),
   component: Watchlist,
 });
 

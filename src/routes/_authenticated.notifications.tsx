@@ -4,7 +4,7 @@ import { MobileFrame } from "@/components/MobileFrame";
 import { BottomNav } from "@/components/BottomNav";
 
 export const Route = createFileRoute("/_authenticated/notifications")({
-  head: () => ({ meta: [{ title: "Notifications — TRYNEX" }] }),
+  head: () => ({ meta: [{ title: "Notifications — Texon" }] }),
   component: NotificationsPage,
 });
 

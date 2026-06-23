@@ -11,7 +11,7 @@ import { MobileFrame } from "@/components/MobileFrame";
 import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/_authenticated/settings")({
-  head: () => ({ meta: [{ title: "Settings — TRYNEX" }] }),
+  head: () => ({ meta: [{ title: "Settings — Texon" }] }),
   component: Settings,
 });
 
@@ -143,10 +143,10 @@ function Settings() {
           <Row icon={BookOpen} label="Community Guidelines" to="/legal/$doc" params={{ doc: "community" }} />
           <Row icon={ScrollText} label="Content Policy" to="/legal/$doc" params={{ doc: "content" }} />
           <Row icon={Cookie} label="Cookie Policy" to="/legal/$doc" params={{ doc: "cookies" }} />
-          <Row icon={Info} label="About Trynex" to="/legal/$doc" params={{ doc: "about" }} last />
+          <Row icon={Info} label="About Texon" to="/legal/$doc" params={{ doc: "about" }} last />
         </Section>
 
-        <p className="mt-6 text-center text-[10px] text-muted-foreground">TRYNEX · v1.0.0</p>
+        <p className="mt-6 text-center text-[10px] text-muted-foreground">Texon · v1.0.0</p>
       </div>
     </MobileFrame>
   );

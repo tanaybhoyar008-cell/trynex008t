@@ -8,7 +8,7 @@ import { userVideosQuery } from "@/lib/queries";
 import { formatCount } from "@/lib/format";
 
 export const Route = createFileRoute("/_authenticated/analytics")({
-  head: () => ({ meta: [{ title: "Analytics — TRYNEX" }] }),
+  head: () => ({ meta: [{ title: "Analytics — Texon" }] }),
   component: Analytics,
 });
 

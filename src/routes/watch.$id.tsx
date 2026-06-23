@@ -17,7 +17,7 @@ import { videoByIdQuery, videoCommentsQuery, publicVideosQuery } from "@/lib/que
 import { formatCount, formatDuration, timeAgo } from "@/lib/format";
 
 export const Route = createFileRoute("/watch/$id")({
-  head: () => ({ meta: [{ title: "Watch — TRYNEX" }] }),
+  head: () => ({ meta: [{ title: "Watch — Texon" }] }),
   notFoundComponent: () => (
     <MobileFrame>
       <div className="grid min-h-screen place-items-center p-8 text-center">

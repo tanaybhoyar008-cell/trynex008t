@@ -4,7 +4,7 @@
 
 @custom-variant dark (&:is(.dark *));
 
-/* TRYNEX — dark violet streaming aesthetic */
+/* Texon — dark violet streaming aesthetic */
 
 @theme inline {
   --font-display: "Sora", "Inter", ui-sans-serif, system-ui, sans-serif;

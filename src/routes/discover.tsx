@@ -8,7 +8,7 @@ import { Thumbnail } from "@/components/Thumbnail";
 import { publicVideosQuery } from "@/lib/queries";
 
 export const Route = createFileRoute("/discover")({
-  head: () => ({ meta: [{ title: "Discover — TRYNEX" }] }),
+  head: () => ({ meta: [{ title: "Discover — Texon" }] }),
   component: Discover,
 });
 
