@@ -1,0 +1,107 @@
+{
+  "version": 1,
+  "sdk_version": "0.20.0",
+  "path": "/mcp",
+  "auth": {
+    "type": "none"
+  },
+  "mcp": {
+    "server": {
+      "name": "texon-mcp",
+      "version": "0.1.0",
+      "title": "Texon MCP"
+    },
+    "tools": [
+      {
+        "name": "list_public_videos",
+        "title": "List public videos",
+        "description": "List the most recent public videos on Texon. Returns id, title, creator, type, views, duration, and created_at.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "limit": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 50,
+              "description": "Maximum number of videos to return (default 20, max 50)."
+            },
+            "type": {
+              "type": "string",
+              "enum": [
+                "short",
+                "series",
+                "film"
+              ],
+              "description": "Filter by video type."
+            },
+            "search": {
+              "type": "string",
+              "description": "Case-insensitive substring match against title."
+            }
+          },
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "get_video",
+        "title": "Get video details",
+        "description": "Fetch a single public video by id, including title, description, tags, views, and creator profile.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "format": "uuid",
+              "description": "Video UUID."
+            }
+          },
+          "required": [
+            "id"
+          ],
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "list_creators",
+        "title": "List creators",
+        "description": "Search creator profiles on Texon by username or display name.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "search": {
+              "type": "string",
+              "description": "Case-insensitive substring against username or display_name."
+            },
+            "limit": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 50
+            }
+          },
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      }
+    ]
+  }
+}
